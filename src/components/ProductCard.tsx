@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Product } from '../types';
-import { useAppContext } from '../context/AppContext';
+import { useFavoritesStore } from '../store/favoritesStore';
 
 interface ProductCardProps {
   product: Product;
@@ -24,10 +24,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onPress,
   variant = 'default',
 }) => {
-  const { favorites, toggleFavorite } = useAppContext();
-  const isFavorite = favorites.some(fav => fav.id === product.id);
+  const { toggleFavorite, isFavorite } = useFavoritesStore();
+  const isProductFavorite = isFavorite(product.id);
 
   const cardWidth = variant === 'small' ? width * 0.42 : width * 0.45;
+
+  const handleFavoritePress = () => {
+    toggleFavorite(product);
+  };
 
   return (
     <TouchableOpacity
@@ -42,22 +46,24 @@ const ProductCard: React.FC<ProductCardProps> = ({
         />
         <TouchableOpacity
           style={styles.favoriteButton}
-          onPress={() => toggleFavorite(product)}
+          onPress={handleFavoritePress}
         >
           <Icon
-            name={isFavorite ? 'favorite' : 'favorite-border'}
+            name={isProductFavorite ? 'favorite' : 'favorite-border'}
             size={20}
-            color={isFavorite ? '#FF6B6B' : '#666'}
+            color={isProductFavorite ? '#FF6B6B' : '#666'}
           />
         </TouchableOpacity>
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.price}>${product.price}</Text>
+        <Text style={styles.price}>${product.price.toFixed(2)}</Text>
         <Text style={styles.title} numberOfLines={2}>
           {product.title}
         </Text>
-        <Text style={styles.category}>{product.category}</Text>
+        <Text style={styles.brand}>
+          {product.category === 'electronics' ? 'SONY' : 'Brand'}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -65,22 +71,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: '#F8F8F8',
+    borderRadius: 16,
     margin: 6,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    position: 'relative',
   },
   imageContainer: {
     position: 'relative',
-    height: 150,
-    backgroundColor: '#f8f8f8',
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    padding: 10,
+    height: 140,
+    backgroundColor: '#F8F8F8',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 16,
   },
   image: {
     width: '100%',
@@ -88,39 +90,33 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    width: 30,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    top: 12,
+    right: 12,
+    padding: 4,
+    zIndex: 1,
   },
   content: {
-    padding: 12,
+    padding: 16,
   },
   price: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1A1A',
     marginBottom: 4,
   },
   title: {
     fontSize: 14,
-    color: '#666',
+    fontWeight: '500',
+    color: '#1A1A1A',
     marginBottom: 4,
     lineHeight: 18,
+    minHeight: 36,
   },
-  category: {
+  brand: {
     fontSize: 12,
-    color: '#999',
-    textTransform: 'capitalize',
+    fontWeight: '500',
+    color: '#8E8E8E',
+    textTransform: 'uppercase',
   },
 });
 

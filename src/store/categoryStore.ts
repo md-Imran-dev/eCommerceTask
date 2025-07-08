@@ -25,29 +25,14 @@ export const useCategoryStore = create<CategoryState>()(
       lastFetchTime: null,
 
       fetchCategories: async () => {
-        console.log('🏪 CategoryStore: fetchCategories called');
         const state = get();
         const now = Date.now();
         
-        console.log('🏪 CategoryStore: Current state:', {
-          categories: state.categories,
-          isLoading: state.isLoading,
-          error: state.error,
-          lastFetchTime: state.lastFetchTime,
-        });
-        
         // Check network connectivity first
-        console.log('🏪 CategoryStore: Checking network connectivity...');
         const netInfo = await NetInfo.fetch();
-        console.log('🏪 CategoryStore: Network info:', {
-          isConnected: netInfo.isConnected,
-          isInternetReachable: netInfo.isInternetReachable,
-          type: netInfo.type,
-        });
-        
         if (!netInfo.isConnected) {
           const errorMessage = 'No internet connection';
-          console.error('❌ CategoryStore: Network error:', errorMessage);
+          console.error('CategoryStore: Network error:', errorMessage);
           set({ isLoading: false, error: errorMessage });
           return;
         }
@@ -58,19 +43,13 @@ export const useCategoryStore = create<CategoryState>()(
           state.lastFetchTime &&
           now - state.lastFetchTime < CACHE_DURATION
         ) {
-          console.log('📦 CategoryStore: Using cached categories:', state.categories);
           return;
         }
 
-        console.log('🔄 CategoryStore: Setting loading state to true');
         set({ isLoading: true, error: null });
 
         try {
-          console.log('🚀 CategoryStore: Calling api.getCategories()');
           const categories = await api.getCategories();
-          
-          console.log('🎉 CategoryStore: API call successful, received categories:', categories);
-          console.log('🔢 CategoryStore: Categories count:', categories.length);
           
           set({
             categories,
@@ -78,26 +57,18 @@ export const useCategoryStore = create<CategoryState>()(
             error: null,
             lastFetchTime: now,
           });
-          
-          console.log('✅ CategoryStore: State updated successfully');
         } catch (error) {
-          console.error('❌ CategoryStore: API call failed:', error);
+          console.error('Failed to fetch categories:', error);
           const errorMessage = error instanceof Error ? error.message : 'Failed to fetch categories';
-          console.error('❌ CategoryStore: Error message:', errorMessage);
           
           set({
             isLoading: false,
             error: errorMessage,
           });
-          
-          console.log('💥 CategoryStore: Error state set');
         }
       },
 
-      clearError: () => {
-        console.log('🧹 CategoryStore: Clearing error');
-        set({ error: null });
-      },
+      clearError: () => set({ error: null }),
     }),
     {
       name: 'category-storage',
