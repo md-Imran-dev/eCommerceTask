@@ -4,7 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, MainTabParamList } from '../types';
-import { useAppContext } from '../context/AppContext';
+import { useFavoritesStore } from '../store/favoritesStore';
+import { useCartStore } from '../store/cartStore';
 
 // Import custom icons
 import HomeIcon from '../assets/icons/HomeIcon.png';
@@ -26,9 +27,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const TabNavigator = () => {
-  const { getCartItemCount, favorites } = useAppContext();
-  const cartCount = getCartItemCount();
-  const favoritesCount = favorites.length;
+  const { getFavoritesCount } = useFavoritesStore();
+  const { getCartItemsCount } = useCartStore();
+
+  const favoritesCount = getFavoritesCount();
+  const cartCount = getCartItemsCount();
 
   return (
     <Tab.Navigator
@@ -84,7 +87,7 @@ const TabNavigator = () => {
           tabBarLabel: 'Favourites',
           tabBarBadge: favoritesCount > 0 ? favoritesCount : undefined,
           tabBarBadgeStyle: {
-            backgroundColor: '#333',
+            backgroundColor: '#FF6B6B',
             color: '#fff',
             fontSize: 10,
             fontWeight: '600',

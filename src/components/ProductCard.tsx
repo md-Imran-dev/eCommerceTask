@@ -10,6 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Product } from '../types';
 import { useFavoritesStore } from '../store/favoritesStore';
+import { favouriteActiveIcon, favouriteInactiveIcon } from '../assets';
 
 interface ProductCardProps {
   product: Product;
@@ -48,10 +49,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
           style={styles.favoriteButton}
           onPress={handleFavoritePress}
         >
-          <Icon
-            name={isProductFavorite ? 'favorite' : 'favorite-border'}
-            size={20}
-            color={isProductFavorite ? '#FF6B6B' : '#666'}
+          <Image
+            source={
+              isProductFavorite ? favouriteActiveIcon : favouriteInactiveIcon
+            }
+            style={styles.favoriteIcon}
           />
         </TouchableOpacity>
       </View>
@@ -117,6 +119,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#8E8E8E',
     textTransform: 'uppercase',
+  },
+  favoriteIcon: {
+    width: 24,
+    height: 24,
   },
 });
 

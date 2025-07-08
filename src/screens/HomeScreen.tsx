@@ -17,6 +17,7 @@ import { RootStackParamList, Product } from '../types';
 import { api } from '../services/api';
 import { useCategoryStore } from '../store/categoryStore';
 import { useFavoritesStore } from '../store/favoritesStore';
+import { favouriteActiveIcon, favouriteInactiveIcon } from '../assets';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -53,10 +54,20 @@ const HomeScreen = () => {
     }
   };
 
-  const electronicsProducts = products.filter(
-    p => p.category === 'electronics',
-  );
-  const recommendedProducts = products.slice(0, 4);
+  // Filter products based on selected category
+  const getFilteredProducts = () => {
+    if (selectedCategory === 'All') {
+      return products;
+    }
+    return products.filter(
+      product =>
+        product.category.toLowerCase() === selectedCategory.toLowerCase(),
+    );
+  };
+
+  const filteredProducts = getFilteredProducts();
+  const dealsProducts = filteredProducts.slice(0, 10); // Show more products for deals
+  const recommendedProducts = filteredProducts.slice(0, 4);
 
   const handleProductPress = (product: Product) => {
     navigation.navigate('ProductDetail', { productId: product.id });
@@ -64,11 +75,7 @@ const HomeScreen = () => {
 
   const handleCategoryPress = (category: string) => {
     setSelectedCategory(category);
-    if (category !== 'All') {
-      navigation.navigate('ProductListing', {
-        category: category,
-      });
-    }
+    setCurrentDealIndex(0); // Reset carousel index when category changes
   };
 
   const handleFavoritePress = (product: Product) => {
@@ -98,10 +105,11 @@ const HomeScreen = () => {
         style={styles.favoriteButton}
         onPress={() => handleFavoritePress(item)}
       >
-        <Icon
-          name={isFavorite(item.id) ? 'favorite' : 'favorite-border'}
-          size={24}
-          color={isFavorite(item.id) ? '#FF6B6B' : '#666'}
+        <Image
+          source={
+            isFavorite(item.id) ? favouriteActiveIcon : favouriteInactiveIcon
+          }
+          style={styles.favoriteIcon}
         />
       </TouchableOpacity>
 
@@ -139,10 +147,11 @@ const HomeScreen = () => {
         style={styles.favoriteButtonSmall}
         onPress={() => handleFavoritePress(item)}
       >
-        <Icon
-          name={isFavorite(item.id) ? 'favorite' : 'favorite-border'}
-          size={20}
-          color={isFavorite(item.id) ? '#FF6B6B' : '#666'}
+        <Image
+          source={
+            isFavorite(item.id) ? favouriteActiveIcon : favouriteInactiveIcon
+          }
+          style={styles.favoriteIcon}
         />
       </TouchableOpacity>
 
@@ -209,10 +218,10 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {!loading && electronicsProducts.length > 0 && (
+          {!loading && dealsProducts.length > 0 && (
             <>
               <FlatList
-                data={electronicsProducts}
+                data={dealsProducts}
                 renderItem={renderDealItem}
                 keyExtractor={item => item.id.toString()}
                 horizontal
@@ -227,7 +236,7 @@ const HomeScreen = () => {
                 }}
               />
               <View style={styles.pagination}>
-                {electronicsProducts.map((_, index) => (
+                {dealsProducts.map((_, index) => (
                   <View
                     key={index}
                     style={[
@@ -444,6 +453,10 @@ const styles = StyleSheet.create({
   },
   recommendedRow: {
     justifyContent: 'space-between',
+  },
+  favoriteIcon: {
+    width: 24,
+    height: 24,
   },
 });
 
