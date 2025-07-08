@@ -303,6 +303,7 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 28,
+    fontFamily: 'Inter',
     fontWeight: '700',
     color: '#1A1A1A',
     letterSpacing: -0.5,
@@ -323,11 +324,13 @@ const styles = StyleSheet.create({
   },
   categoryTabText: {
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '400',
     color: '#8E8E8E',
   },
   activeTabText: {
     color: '#1A1A1A',
+    fontFamily: 'Inter',
     fontWeight: '600',
   },
   section: {
@@ -342,11 +345,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
+    fontFamily: 'Inter',
     fontWeight: '700',
     color: '#1A1A1A',
   },
   seeAll: {
     fontSize: 14,
+    fontFamily: 'Inter',
     fontWeight: '500',
     color: '#8E8E8E',
   },
@@ -380,30 +385,35 @@ const styles = StyleSheet.create({
   },
   dealCategory: {
     fontSize: 12,
+    fontFamily: 'Inter',
     fontWeight: '500',
     color: '#8E8E8E',
     marginBottom: 4,
   },
   dealPrice: {
     fontSize: 18,
+    fontFamily: 'Inter',
     fontWeight: '700',
     color: '#FF3B30',
     marginBottom: 4,
   },
   dealOriginalPrice: {
     fontSize: 14,
+    fontFamily: 'Inter',
     fontWeight: '400',
     color: '#8E8E8E',
     textDecorationLine: 'line-through',
   },
   dealTitle: {
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '600',
     color: '#1A1A1A',
     marginBottom: 4,
   },
   dealDescription: {
     fontSize: 13,
+    fontFamily: 'Inter',
     fontWeight: '400',
     color: '#8E8E8E',
     lineHeight: 18,
@@ -469,12 +479,14 @@ const styles = StyleSheet.create({
   },
   recommendedPrice: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    fontFamily: 'Inter',
+    fontWeight: '800',
+    color: '#212429',
     marginBottom: 4,
   },
   recommendedTitle: {
     fontSize: 14,
+    fontFamily: 'Inter',
     fontWeight: '500',
     color: '#1A1A1A',
     marginBottom: 4,
@@ -483,9 +495,11 @@ const styles = StyleSheet.create({
   },
   recommendedBrand: {
     fontSize: 12,
-    fontWeight: '500',
-    color: '#1A1A1A',
+    fontFamily: 'Inter',
+    fontWeight: '400',
     textTransform: 'uppercase',
+    fontStyle: 'normal',
+    color: '#8E8E8E',
   },
   recommendedRow: {
     justifyContent: 'space-between',
