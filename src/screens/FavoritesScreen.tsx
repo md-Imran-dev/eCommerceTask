@@ -97,17 +97,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
+    fontFamily: 'Inter',
     fontWeight: '700',
     color: '#1A1A1A',
     letterSpacing: -0.5,
   },
   clearText: {
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '500',
     color: '#FF6B6B',
   },
   countText: {
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '500',
     color: '#8E8E8E',
     paddingHorizontal: 20,
@@ -128,6 +131,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 24,
+    fontFamily: 'Inter',
     fontWeight: '700',
     color: '#1A1A1A',
     marginTop: 24,
@@ -135,6 +139,7 @@ const styles = StyleSheet.create({
   },
   emptyDescription: {
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '400',
     color: '#8E8E8E',
     textAlign: 'center',
@@ -149,6 +154,7 @@ const styles = StyleSheet.create({
   },
   browseButtonText: {
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '600',
     color: '#FFFFFF',
   },

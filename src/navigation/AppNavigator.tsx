@@ -66,6 +66,7 @@ const TabNavigator = () => {
         tabBarInactiveTintColor: '#C0C0C0',
         tabBarLabelStyle: {
           fontSize: 12,
+          fontFamily: 'Inter',
           fontWeight: '500',
         },
         tabBarStyle: {
@@ -90,6 +91,7 @@ const TabNavigator = () => {
             backgroundColor: '#FF6B6B',
             color: '#fff',
             fontSize: 10,
+            fontFamily: 'Inter',
             fontWeight: '600',
           },
         }}
@@ -103,6 +105,7 @@ const TabNavigator = () => {
             backgroundColor: '#333',
             color: '#fff',
             fontSize: 10,
+            fontFamily: 'Inter',
             fontWeight: '600',
           },
         }}

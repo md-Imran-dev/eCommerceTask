@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
+    fontFamily: 'Inter',
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
@@ -111,12 +112,14 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 18,
+    fontFamily: 'Inter',
     fontWeight: '600',
     color: '#333',
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 14,
+    fontFamily: 'Inter',
     color: '#666',
   },
   editButton: {
@@ -148,6 +151,7 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 16,
+    fontFamily: 'Inter',
     color: '#333',
     marginLeft: 15,
   },

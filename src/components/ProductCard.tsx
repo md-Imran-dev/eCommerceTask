@@ -102,12 +102,14 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 18,
+    fontFamily: 'Inter',
     fontWeight: '700',
     color: '#1A1A1A',
     marginBottom: 4,
   },
   title: {
     fontSize: 14,
+    fontFamily: 'Inter',
     fontWeight: '500',
     color: '#1A1A1A',
     marginBottom: 4,
@@ -116,6 +118,7 @@ const styles = StyleSheet.create({
   },
   brand: {
     fontSize: 12,
+    fontFamily: 'Inter',
     fontWeight: '500',
     color: '#8E8E8E',
     textTransform: 'uppercase',

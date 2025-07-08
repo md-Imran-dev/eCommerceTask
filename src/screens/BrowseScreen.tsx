@@ -9,12 +9,14 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { useCategoryStore } from '../store/categoryStore';
+import { rightArrowIcon, searchIcon } from '../assets';
 
 type BrowseScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -90,20 +92,14 @@ const BrowseScreen = () => {
       style={styles.categoryItem}
       onPress={() => handleCategoryPress(item)}
     >
-      <View style={styles.categoryIcon}>
-        <Icon name={item.icon} size={30} color="#007AFF" />
-      </View>
       <Text style={styles.categoryName}>{item.name}</Text>
-      <Icon name="chevron-right" size={24} color="#999" />
+      <Image source={rightArrowIcon} style={styles.rightArrowIcon} />
     </TouchableOpacity>
   );
 
   if (isLoading && categories.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Browse Categories</Text>
-        </View>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
           <Text style={styles.loadingText}>Loading categories...</Text>
@@ -114,19 +110,15 @@ const BrowseScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Browse Categories</Text>
-      </View>
-
       <View style={styles.searchContainer}>
-        <Icon name="search" size={20} color="#999" style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search categories..."
+          placeholder="Search"
           value={searchQuery}
           onChangeText={setSearchQuery}
           placeholderTextColor="#999"
         />
+        <Image source={searchIcon} style={styles.searchIcon} />
       </View>
 
       <FlatList
@@ -137,7 +129,7 @@ const BrowseScreen = () => {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Icon name="search-off" size={48} color="#ccc" />
+            <Image source={searchIcon} style={styles.searchIcon} />
             <Text style={styles.emptyText}>
               {searchQuery ? 'No categories found' : 'No categories available'}
             </Text>
@@ -162,37 +154,29 @@ const BrowseScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
-  },
-  header: {
-    padding: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
+    backgroundColor: '#FFFFFF',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    margin: 16,
+    backgroundColor: '#F5F5F5',
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 16,
     paddingHorizontal: 16,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e9ecef',
+    height: 48,
   },
   searchIcon: {
+    width: 20,
+    height: 20,
     marginRight: 8,
   },
   searchInput: {
     flex: 1,
     height: 48,
     fontSize: 16,
+    fontFamily: 'Inter',
     color: '#333',
   },
   categoryList: {
@@ -202,27 +186,18 @@ const styles = StyleSheet.create({
   categoryItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 16,
-    marginBottom: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e9ecef',
-  },
-  categoryIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#f0f8ff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
   },
   categoryName: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 20,
+    fontFamily: 'Inter',
     fontWeight: '600',
-    color: '#333',
+    color: '#212429',
   },
   loadingContainer: {
     flex: 1,
@@ -232,6 +207,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
+    fontFamily: 'Inter',
     color: '#666',
   },
   emptyContainer: {
@@ -242,6 +218,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
+    fontFamily: 'Inter',
     color: '#666',
     marginTop: 16,
     textAlign: 'center',
@@ -256,7 +233,12 @@ const styles = StyleSheet.create({
   retryButtonText: {
     color: '#fff',
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '600',
+  },
+  rightArrowIcon: {
+    color: '#212429',
+    height: 16,
   },
 });
 

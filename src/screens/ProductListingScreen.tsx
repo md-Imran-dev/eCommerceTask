@@ -294,6 +294,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     fontSize: 16,
+    fontFamily: 'Inter',
     color: '#666',
   },
   header: {
@@ -312,6 +313,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
+    fontFamily: 'Inter',
     fontWeight: 'bold',
     color: '#333',
   },
@@ -337,6 +339,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     fontSize: 14,
+    fontFamily: 'Inter',
     color: '#666',
     marginHorizontal: 5,
   },
@@ -352,6 +355,7 @@ const styles = StyleSheet.create({
   },
   resultsCount: {
     fontSize: 16,
+    fontFamily: 'Inter',
     color: '#333',
   },
   sortButton: {
@@ -360,6 +364,7 @@ const styles = StyleSheet.create({
   },
   sortText: {
     fontSize: 14,
+    fontFamily: 'Inter',
     color: '#666',
     marginRight: 5,
   },
@@ -393,6 +398,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
+    fontFamily: 'Inter',
     fontWeight: 'bold',
     color: '#333',
   },
@@ -412,10 +418,12 @@ const styles = StyleSheet.create({
   },
   modalOptionText: {
     fontSize: 16,
+    fontFamily: 'Inter',
     color: '#333',
   },
   selectedOptionText: {
     color: '#007AFF',
+    fontFamily: 'Inter',
     fontWeight: '500',
   },
 });

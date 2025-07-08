@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     fontSize: 16,
+    fontFamily: 'Inter',
     color: '#666',
   },
   errorContainer: {
@@ -196,6 +197,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
+    fontFamily: 'Inter',
     color: '#666',
   },
   header: {
@@ -244,12 +246,14 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 24,
+    fontFamily: 'Inter',
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 8,
   },
   title: {
     fontSize: 18,
+    fontFamily: 'Inter',
     fontWeight: '600',
     color: '#333',
     marginBottom: 4,
@@ -257,6 +261,7 @@ const styles = StyleSheet.create({
   },
   model: {
     fontSize: 14,
+    fontFamily: 'Inter',
     color: '#666',
     marginBottom: 16,
   },
@@ -271,10 +276,12 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 14,
+    fontFamily: 'Inter',
     color: '#666',
   },
   description: {
     fontSize: 14,
+    fontFamily: 'Inter',
     color: '#666',
     lineHeight: 20,
     marginBottom: 20,
@@ -307,6 +314,7 @@ const styles = StyleSheet.create({
   addToCartText: {
     color: '#fff',
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '600',
   },
 });

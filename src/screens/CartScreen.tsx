@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
+    fontFamily: 'Inter',
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
@@ -164,12 +165,14 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
+    fontFamily: 'Inter',
     color: '#666',
     marginTop: 16,
     fontWeight: '600',
   },
   emptySubText: {
     fontSize: 14,
+    fontFamily: 'Inter',
     color: '#999',
     marginTop: 4,
   },
@@ -199,6 +202,7 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     fontSize: 14,
+    fontFamily: 'Inter',
     fontWeight: '600',
     color: '#333',
     marginBottom: 4,
@@ -206,18 +210,21 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: 'bold',
     color: '#FF6B6B',
     marginBottom: 2,
   },
   productOriginalPrice: {
     fontSize: 12,
+    fontFamily: 'Inter',
     color: '#999',
     textDecorationLine: 'line-through',
     marginBottom: 4,
   },
   productCategory: {
     fontSize: 12,
+    fontFamily: 'Inter',
     color: '#666',
     textTransform: 'capitalize',
   },
@@ -236,6 +243,7 @@ const styles = StyleSheet.create({
   },
   quantity: {
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '600',
     color: '#333',
     marginHorizontal: 15,
@@ -261,10 +269,12 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 16,
+    fontFamily: 'Inter',
     color: '#666',
   },
   totalValue: {
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '600',
     color: '#333',
   },
@@ -278,6 +288,7 @@ const styles = StyleSheet.create({
   checkoutButtonText: {
     color: '#fff',
     fontSize: 16,
+    fontFamily: 'Inter',
     fontWeight: '600',
   },
   paymentMethods: {
@@ -294,6 +305,7 @@ const styles = StyleSheet.create({
   },
   paymentText: {
     fontSize: 12,
+    fontFamily: 'Inter',
     color: '#666',
     fontWeight: '500',
   },
