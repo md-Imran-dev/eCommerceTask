@@ -71,7 +71,7 @@ const TabNavigator = () => {
           borderTopColor: '#f0f0f0',
           paddingBottom: 5,
           paddingTop: 5,
-          height: 65,
+          // height: 65,
         },
       })}
     >

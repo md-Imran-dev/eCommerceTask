@@ -7,11 +7,14 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
+import { useCategoryStore } from '../store/categoryStore';
 
 type BrowseScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -21,66 +24,136 @@ interface CategoryItem {
   icon: string;
 }
 
+// Icon mapping for FakeStore API categories
+const getCategoryIcon = (category: string): string => {
+  const iconMap: { [key: string]: string } = {
+    electronics: 'devices',
+    jewelery: 'diamond',
+    "men's clothing": 'checkroom',
+    "women's clothing": 'woman',
+    // Fallback icons for other categories
+    clothing: 'checkroom',
+    accessories: 'watch',
+    books: 'book',
+    home: 'home',
+    sports: 'sports',
+  };
+
+  return iconMap[category.toLowerCase()] || 'category';
+};
+
 const BrowseScreen = () => {
   const navigation = useNavigation<BrowseScreenNavigationProp>();
-  const [searchText, setSearchText] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const { categories, isLoading, error, fetchCategories, clearError } =
+    useCategoryStore();
 
-  const categories: CategoryItem[] = [
-    { id: 'electronics', name: 'Audio', icon: 'headset' },
-    { id: 'electronics', name: 'Drones + Electronics', icon: 'camera' },
-    { id: 'electronics', name: 'Photo + Video', icon: 'photo-camera' },
-    { id: 'electronics', name: 'Gaming + VR', icon: 'games' },
-    { id: 'electronics', name: 'Networking', icon: 'wifi' },
-    { id: 'electronics', name: 'Notebooks + PCs', icon: 'computer' },
-    { id: 'electronics', name: 'PC components', icon: 'memory' },
-    { id: 'electronics', name: 'Peripherals', icon: 'mouse' },
-    { id: 'electronics', name: 'Smartphones + Tablets', icon: 'smartphone' },
-    { id: 'electronics', name: 'Software solutions', icon: 'apps' },
-    { id: 'electronics', name: 'TV + Home cinema', icon: 'tv' },
-  ];
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
-  const renderCategory = ({ item }: { item: CategoryItem }) => (
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Error', `Failed to load categories: ${error}`, [
+        {
+          text: 'Retry',
+          onPress: () => {
+            clearError();
+            fetchCategories();
+          },
+        },
+        { text: 'Cancel', style: 'cancel' },
+      ]);
+    }
+  }, [error, clearError, fetchCategories]);
+
+  const transformCategoriesToItems = (categories: string[]): CategoryItem[] => {
+    return categories.map(category => ({
+      id: category,
+      name: category.charAt(0).toUpperCase() + category.slice(1),
+      icon: getCategoryIcon(category),
+    }));
+  };
+
+  const filteredCategories = transformCategoriesToItems(categories).filter(
+    category => category.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const handleCategoryPress = (category: CategoryItem) => {
+    navigation.navigate('ProductListing', {
+      category: category.id,
+    });
+  };
+
+  const renderCategoryItem = ({ item }: { item: CategoryItem }) => (
     <TouchableOpacity
       style={styles.categoryItem}
-      onPress={() =>
-        navigation.navigate('ProductListing', { category: item.id })
-      }
+      onPress={() => handleCategoryPress(item)}
     >
-      <View style={styles.categoryContent}>
-        <Text style={styles.categoryText}>{item.name}</Text>
-        <Icon name="chevron-right" size={24} color="#666" />
+      <View style={styles.categoryIcon}>
+        <Icon name={item.icon} size={30} color="#007AFF" />
       </View>
+      <Text style={styles.categoryName}>{item.name}</Text>
+      <Icon name="chevron-right" size={24} color="#999" />
     </TouchableOpacity>
   );
 
+  if (isLoading && categories.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Browse Categories</Text>
+        </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007AFF" />
+          <Text style={styles.loadingText}>Loading categories...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
-          <Icon
-            name="search"
-            size={20}
-            color="#666"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search"
-            value={searchText}
-            onChangeText={setSearchText}
-            placeholderTextColor="#999"
-          />
-        </View>
+      <View style={styles.header}>
+        <Text style={styles.title}>Browse Categories</Text>
       </View>
 
-      {/* Categories List */}
+      <View style={styles.searchContainer}>
+        <Icon name="search" size={20} color="#999" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search categories..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholderTextColor="#999"
+        />
+      </View>
+
       <FlatList
-        data={categories}
-        renderItem={renderCategory}
-        keyExtractor={item => item.name}
+        data={filteredCategories}
+        renderItem={renderCategoryItem}
+        keyExtractor={item => item.id}
+        style={styles.categoryList}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.categoriesList}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Icon name="search-off" size={48} color="#ccc" />
+            <Text style={styles.emptyText}>
+              {searchQuery ? 'No categories found' : 'No categories available'}
+            </Text>
+            {!searchQuery && (
+              <TouchableOpacity
+                style={styles.retryButton}
+                onPress={() => {
+                  clearError();
+                  fetchCategories();
+                }}
+              >
+                <Text style={styles.retryButtonText}>Retry</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        }
       />
     </SafeAreaView>
   );
@@ -89,58 +162,101 @@ const BrowseScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#f8f9fa',
+  },
+  header: {
+    padding: 20,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e9ecef',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
   },
   searchContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
-  },
-  searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    margin: 16,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
   },
   searchIcon: {
-    marginRight: 10,
+    marginRight: 8,
   },
   searchInput: {
     flex: 1,
+    height: 48,
     fontSize: 16,
     color: '#333',
   },
-  categoriesList: {
-    paddingHorizontal: 20,
+  categoryList: {
+    flex: 1,
+    paddingHorizontal: 16,
   },
   categoryItem: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 10,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  categoryContent: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 18,
+    backgroundColor: '#fff',
+    padding: 16,
+    marginBottom: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
   },
-  categoryText: {
+  categoryIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#f0f8ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  categoryName: {
+    flex: 1,
     fontSize: 16,
+    fontWeight: '600',
     color: '#333',
-    fontWeight: '500',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 100,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: '#666',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  retryButton: {
+    marginTop: 20,
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
