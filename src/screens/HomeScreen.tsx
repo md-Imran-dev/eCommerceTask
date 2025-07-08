@@ -66,7 +66,7 @@ const HomeScreen = () => {
   };
 
   const filteredProducts = getFilteredProducts();
-  const dealsProducts = filteredProducts.slice(0, 10); // Show more products for deals
+  const dealsProducts = filteredProducts.slice(0, 3); // Limited to 3 items for carousel
   const recommendedProducts = filteredProducts.slice(0, 4);
 
   const handleProductPress = (product: Product) => {
@@ -96,44 +96,55 @@ const HomeScreen = () => {
     );
   };
 
-  const renderDealItem = ({ item }: { item: Product }) => (
+  const renderDealItem = ({
+    item,
+    index,
+  }: {
+    item: Product;
+    index: number;
+  }) => (
     <TouchableOpacity
       style={styles.dealCard}
       onPress={() => handleProductPress(item)}
     >
-      <TouchableOpacity
-        style={styles.favoriteButton}
-        onPress={() => handleFavoritePress(item)}
-      >
-        <Image
-          source={
-            isFavorite(item.id) ? favouriteActiveIcon : favouriteInactiveIcon
-          }
-          style={styles.favoriteIcon}
-        />
-      </TouchableOpacity>
+      <View style={styles.dealContent}>
+        <View style={styles.dealImageContainer}>
+          <Image
+            source={{ uri: item.image }}
+            style={styles.dealImage}
+            resizeMode="contain"
+          />
+        </View>
 
-      <Image
-        source={{ uri: item.image }}
-        style={styles.dealImage}
-        resizeMode="contain"
-      />
-
-      <View style={styles.dealInfo}>
-        <Text style={styles.dealCategory}>{item.category}</Text>
-        <Text style={styles.dealPrice}>
-          ${item.price.toFixed(2)}
-          <Text style={styles.dealOriginalPrice}>
-            {' $'}
-            {(item.price * 1.3).toFixed(2)}
+        <View style={styles.dealInfo}>
+          <Text style={styles.dealCategory}>
+            {getCategoryDisplayName(item.category)}
           </Text>
-        </Text>
-        <Text style={styles.dealTitle} numberOfLines={2}>
-          {item.title}
-        </Text>
-        <Text style={styles.dealDescription} numberOfLines={2}>
-          {item.description}
-        </Text>
+          <Text style={styles.dealPrice}>
+            ${item.price.toFixed(2)}{' '}
+            <Text style={styles.dealOriginalPrice}>
+              ${(item.price * 1.3).toFixed(2)}
+            </Text>
+          </Text>
+          <Text style={styles.dealTitle} numberOfLines={1}>
+            {item.title}
+          </Text>
+          <Text style={styles.dealDescription} numberOfLines={2}>
+            {item.description}
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.favoriteButton}
+          onPress={() => handleFavoritePress(item)}
+        >
+          <Image
+            source={
+              isFavorite(item.id) ? favouriteActiveIcon : favouriteInactiveIcon
+            }
+            style={styles.favoriteIcon}
+          />
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
@@ -176,13 +187,13 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.greeting}>Hello Michael</Text>
-        </View>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Hello Michael</Text>
+      </View>
 
-        {/* Category Tabs */}
+      {/* Category Tabs */}
+      <View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -208,7 +219,8 @@ const HomeScreen = () => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* Deals of the day */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -219,7 +231,7 @@ const HomeScreen = () => {
           </View>
 
           {!loading && dealsProducts.length > 0 && (
-            <>
+            <View>
               <FlatList
                 data={dealsProducts}
                 renderItem={renderDealItem}
@@ -228,6 +240,9 @@ const HomeScreen = () => {
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
                 style={styles.dealsContainer}
+                snapToInterval={width - 40 + 20}
+                contentContainerStyle={{ gap: 20, paddingHorizontal: 20 }}
+                decelerationRate="fast"
                 onMomentumScrollEnd={event => {
                   const newIndex = Math.round(
                     event.nativeEvent.contentOffset.x / (width - 40),
@@ -246,7 +261,7 @@ const HomeScreen = () => {
                   />
                 ))}
               </View>
-            </>
+            </View>
           )}
         </View>
 
@@ -330,48 +345,48 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#8E8E8E',
   },
-  dealsContainer: {
-    paddingLeft: 20,
-  },
+  dealsContainer: {},
   dealCard: {
     width: width - 40,
-    backgroundColor: '#F8F8F8',
+    height: 180,
+    backgroundColor: '#F5F5F5',
     borderRadius: 16,
-    padding: 20,
-    marginRight: 16,
-    position: 'relative',
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
   },
-  favoriteButton: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    zIndex: 1,
-    padding: 4,
+  dealContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dealImageContainer: {
+    flex: 0.4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
   },
   dealImage: {
     width: '100%',
-    height: 180,
-    marginBottom: 16,
-    alignSelf: 'center',
+    height: '100%',
+    resizeMode: 'contain',
   },
   dealInfo: {
-    alignItems: 'flex-start',
+    flex: 0.6,
+    paddingRight: 16,
   },
   dealCategory: {
     fontSize: 12,
     fontWeight: '500',
     color: '#8E8E8E',
-    textTransform: 'capitalize',
     marginBottom: 4,
   },
   dealPrice: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '700',
-    color: '#FF6B6B',
-    marginBottom: 8,
+    color: '#FF3B30',
+    marginBottom: 4,
   },
   dealOriginalPrice: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '400',
     color: '#8E8E8E',
     textDecorationLine: 'line-through',
@@ -380,31 +395,40 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#1A1A1A',
-    marginBottom: 8,
-    lineHeight: 22,
+    marginBottom: 4,
   },
   dealDescription: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '400',
     color: '#8E8E8E',
-    lineHeight: 20,
+    lineHeight: 18,
+  },
+  favoriteButton: {
+    padding: 8,
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    zIndex: 1,
   },
   pagination: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 16,
+    paddingHorizontal: 20,
   },
   paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#E5E5E5',
-    marginHorizontal: 4,
+    width: 9,
+    height: 4,
+    borderRadius: 5,
+    backgroundColor: '#E0E0E0',
+    marginHorizontal: 3,
   },
   paginationDotActive: {
     backgroundColor: '#1A1A1A',
-    width: 24,
+    width: 35,
+    height: 4,
+    borderRadius: 5,
   },
   recommendedContainer: {
     paddingHorizontal: 20,
@@ -457,6 +481,9 @@ const styles = StyleSheet.create({
   favoriteIcon: {
     width: 24,
     height: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 4,
   },
 });
 
