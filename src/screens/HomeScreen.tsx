@@ -166,11 +166,13 @@ const HomeScreen = () => {
         />
       </TouchableOpacity>
 
-      <Image
-        source={{ uri: item.image }}
-        style={styles.recommendedImage}
-        resizeMode="contain"
-      />
+      <View style={styles.recommendedImageContainer}>
+        <Image
+          source={{ uri: item.image }}
+          style={styles.recommendedImage}
+          resizeMode="contain"
+        />
+      </View>
 
       <Text style={styles.recommendedPrice}>${item.price.toFixed(2)}</Text>
       <Text style={styles.recommendedTitle} numberOfLines={2}>
@@ -220,6 +222,7 @@ const HomeScreen = () => {
           ))}
         </ScrollView>
       </View>
+
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Deals of the day */}
         <View style={styles.section}>
@@ -267,7 +270,9 @@ const HomeScreen = () => {
 
         {/* Recommended for you */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recommended for you</Text>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recommended for you</Text>
+          </View>
 
           {!loading && recommendedProducts.length > 0 && (
             <FlatList
@@ -435,9 +440,8 @@ const styles = StyleSheet.create({
   },
   recommendedCard: {
     flex: 1,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    padding: 16,
     marginHorizontal: 4,
     marginBottom: 12,
     position: 'relative',
@@ -449,11 +453,19 @@ const styles = StyleSheet.create({
     zIndex: 1,
     padding: 4,
   },
+  recommendedImageContainer: {
+    backgroundColor: '#F8F8F8',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   recommendedImage: {
     width: '100%',
-    height: 120,
-    marginBottom: 12,
+    height: 150,
     alignSelf: 'center',
+    padding: 12,
   },
   recommendedPrice: {
     fontSize: 18,
@@ -472,7 +484,7 @@ const styles = StyleSheet.create({
   recommendedBrand: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#8E8E8E',
+    color: '#1A1A1A',
     textTransform: 'uppercase',
   },
   recommendedRow: {
