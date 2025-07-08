@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Modal,
   ScrollView,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -17,6 +18,14 @@ import { RootStackParamList, Product } from '../types';
 import { api } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import { useCategoryStore } from '../store/categoryStore';
+import {
+  leftArrowIcon,
+  searchIcon,
+  filterIcon,
+  downArrowIcon,
+  clickedIcon,
+  closeIcon,
+} from '../assets';
 
 type ProductListingScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -31,10 +40,15 @@ const ProductListingScreen = () => {
   const { category } = route.params;
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('Relevance');
   const [selectedCategory, setSelectedCategory] = useState(category);
+  const [selectedBrand, setSelectedBrand] = useState('All');
+  const [selectedPriceRange, setSelectedPriceRange] = useState('All');
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showBrandModal, setShowBrandModal] = useState(false);
+  const [showPriceModal, setShowPriceModal] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
 
   const { categories, fetchCategories } = useCategoryStore();
@@ -46,6 +60,10 @@ const ProductListingScreen = () => {
   useEffect(() => {
     fetchProducts();
   }, [selectedCategory]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [products, selectedBrand, selectedPriceRange]);
 
   const fetchProducts = async () => {
     try {
@@ -59,6 +77,43 @@ const ProductListingScreen = () => {
     }
   };
 
+  const applyFilters = () => {
+    let filtered = [...products];
+
+    // Apply brand filter (simplified - you can implement proper brand filtering)
+    if (selectedBrand !== 'All') {
+      filtered = filtered.filter(product =>
+        product.category.toLowerCase().includes(selectedBrand.toLowerCase()),
+      );
+    }
+
+    // Apply price range filter
+    if (selectedPriceRange !== 'All') {
+      switch (selectedPriceRange) {
+        case 'Under $50':
+          filtered = filtered.filter(product => product.price < 50);
+          break;
+        case '$50 - $100':
+          filtered = filtered.filter(
+            product => product.price >= 50 && product.price <= 100,
+          );
+          break;
+        case '$100 - $200':
+          filtered = filtered.filter(
+            product => product.price >= 100 && product.price <= 200,
+          );
+          break;
+        case 'Over $200':
+          filtered = filtered.filter(product => product.price > 200);
+          break;
+        default:
+          break;
+      }
+    }
+
+    setFilteredProducts(filtered);
+  };
+
   const handleProductPress = (product: Product) => {
     navigation.navigate('ProductDetail', { productId: product.id });
   };
@@ -68,11 +123,21 @@ const ProductListingScreen = () => {
     setShowCategoryModal(false);
   };
 
+  const handleBrandSelect = (brand: string) => {
+    setSelectedBrand(brand);
+    setShowBrandModal(false);
+  };
+
+  const handlePriceSelect = (priceRange: string) => {
+    setSelectedPriceRange(priceRange);
+    setShowPriceModal(false);
+  };
+
   const handleSortSelect = (sortOption: string) => {
     setSortBy(sortOption);
     setShowSortModal(false);
     // Apply sorting logic here
-    const sortedProducts = [...products];
+    const sortedProducts = [...filteredProducts];
     switch (sortOption) {
       case 'Price: Low to High':
         sortedProducts.sort((a, b) => a.price - b.price);
@@ -80,27 +145,27 @@ const ProductListingScreen = () => {
       case 'Price: High to Low':
         sortedProducts.sort((a, b) => b.price - a.price);
         break;
-      case 'Rating':
-        sortedProducts.sort(
-          (a, b) => (b.rating?.rate || 0) - (a.rating?.rate || 0),
-        );
-        break;
       default:
         // Keep original order for 'Relevance'
         break;
     }
-    setProducts(sortedProducts);
+    setFilteredProducts(sortedProducts);
   };
 
   const renderProduct = ({ item }: { item: Product }) => (
     <ProductCard product={item} onPress={handleProductPress} />
   );
 
-  const sortOptions = [
-    'Relevance',
-    'Price: Low to High',
-    'Price: High to Low',
-    'Rating',
+  const sortOptions = ['Relevance', 'Price: Low to High', 'Price: High to Low'];
+
+  const brandOptions = ['All', 'SONY', 'Apple', 'Samsung', 'Generic'];
+
+  const priceOptions = [
+    'All',
+    'Under $50',
+    '$50 - $100',
+    '$100 - $200',
+    'Over $200',
   ];
 
   // Display name mapping for FakeStore API categories
@@ -136,13 +201,13 @@ const ProductListingScreen = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Icon name="arrow-back" size={24} color="#333" />
+          <Image source={leftArrowIcon} style={styles.headerIcon} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
           {getCategoryDisplayName(selectedCategory)}
         </Text>
         <TouchableOpacity style={styles.searchButton}>
-          <Icon name="search" size={24} color="#333" />
+          <Image source={searchIcon} style={styles.headerIcon} />
         </TouchableOpacity>
       </View>
 
@@ -152,37 +217,49 @@ const ProductListingScreen = () => {
           style={styles.filterButton}
           onPress={() => setShowCategoryModal(true)}
         >
-          <Icon name="tune" size={20} color="#666" />
+          <Image source={filterIcon} style={styles.filterIconStyle} />
           <Text style={styles.filterText}>Category</Text>
-          <Icon name="keyboard-arrow-down" size={20} color="#666" />
+          <Image source={downArrowIcon} style={styles.downArrowStyle} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.filterButton}>
-          <Text style={styles.filterText}>Brand</Text>
-          <Icon name="keyboard-arrow-down" size={20} color="#666" />
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={() => setShowBrandModal(true)}
+        >
+          <Text style={styles.filterText}>
+            {selectedBrand === 'All' ? 'Brand' : selectedBrand}
+          </Text>
+          <Image source={downArrowIcon} style={styles.downArrowStyle} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.filterButton}>
-          <Text style={styles.filterText}>Price</Text>
-          <Icon name="keyboard-arrow-down" size={20} color="#666" />
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={() => setShowPriceModal(true)}
+        >
+          <Text style={styles.filterText}>
+            {selectedPriceRange === 'All' ? 'Price' : selectedPriceRange}
+          </Text>
+          <Image source={downArrowIcon} style={styles.downArrowStyle} />
         </TouchableOpacity>
       </View>
 
       {/* Results count and sort */}
       <View style={styles.resultsHeader}>
-        <Text style={styles.resultsCount}>{products.length} products</Text>
+        <Text style={styles.resultsCount}>
+          {filteredProducts.length.toLocaleString()} products
+        </Text>
         <TouchableOpacity
           style={styles.sortButton}
           onPress={() => setShowSortModal(true)}
         >
           <Text style={styles.sortText}>Sort by {sortBy}</Text>
-          <Icon name="keyboard-arrow-down" size={20} color="#666" />
+          <Image source={downArrowIcon} style={styles.downArrowStyle} />
         </TouchableOpacity>
       </View>
 
       {/* Products Grid */}
       <FlatList
-        data={products}
+        data={filteredProducts}
         renderItem={renderProduct}
         keyExtractor={item => item.id.toString()}
         numColumns={2}
@@ -210,10 +287,7 @@ const ProductListingScreen = () => {
               {categories.map(category => (
                 <TouchableOpacity
                   key={category}
-                  style={[
-                    styles.modalOption,
-                    selectedCategory === category && styles.selectedOption,
-                  ]}
+                  style={styles.modalOption}
                   onPress={() => handleCategorySelect(category)}
                 >
                   <Text
@@ -235,6 +309,86 @@ const ProductListingScreen = () => {
         </View>
       </Modal>
 
+      {/* Brand Modal */}
+      <Modal
+        visible={showBrandModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowBrandModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Brand</Text>
+              <TouchableOpacity onPress={() => setShowBrandModal(false)}>
+                <Icon name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.modalBody}>
+              {brandOptions.map(brand => (
+                <TouchableOpacity
+                  key={brand}
+                  style={styles.modalOption}
+                  onPress={() => handleBrandSelect(brand)}
+                >
+                  <Text
+                    style={[
+                      styles.modalOptionText,
+                      selectedBrand === brand && styles.selectedOptionText,
+                    ]}
+                  >
+                    {brand}
+                  </Text>
+                  {selectedBrand === brand && (
+                    <Icon name="check" size={20} color="#007AFF" />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Price Modal */}
+      <Modal
+        visible={showPriceModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowPriceModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Price Range</Text>
+              <TouchableOpacity onPress={() => setShowPriceModal(false)}>
+                <Icon name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.modalBody}>
+              {priceOptions.map(price => (
+                <TouchableOpacity
+                  key={price}
+                  style={styles.modalOption}
+                  onPress={() => handlePriceSelect(price)}
+                >
+                  <Text
+                    style={[
+                      styles.modalOptionText,
+                      selectedPriceRange === price && styles.selectedOptionText,
+                    ]}
+                  >
+                    {price}
+                  </Text>
+                  {selectedPriceRange === price && (
+                    <Icon name="check" size={20} color="#007AFF" />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
       {/* Sort Modal */}
       <Modal
         visible={showSortModal}
@@ -247,16 +401,16 @@ const ProductListingScreen = () => {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Sort By</Text>
               <TouchableOpacity onPress={() => setShowSortModal(false)}>
-                <Icon name="close" size={24} color="#333" />
+                <Image source={closeIcon} style={styles.closeIcon} />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.modalBody}>
-              {sortOptions.map(option => (
+              {sortOptions.map((option, index) => (
                 <TouchableOpacity
                   key={option}
                   style={[
                     styles.modalOption,
-                    sortBy === option && styles.selectedOption,
+                    index === sortOptions.length - 1 && styles.lastModalOption,
                   ]}
                   onPress={() => handleSortSelect(option)}
                 >
@@ -269,7 +423,7 @@ const ProductListingScreen = () => {
                     {option}
                   </Text>
                   {sortBy === option && (
-                    <Icon name="check" size={20} color="#007AFF" />
+                    <Image source={clickedIcon} style={styles.clickedIcon} />
                   )}
                 </TouchableOpacity>
               ))}
@@ -284,7 +438,7 @@ const ProductListingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#FFFFFF',
   },
   loadingContainer: {
     flex: 1,
@@ -302,11 +456,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: '#FFFFFF',
   },
   backButton: {
     padding: 5,
@@ -320,20 +472,24 @@ const styles = StyleSheet.create({
   searchButton: {
     padding: 5,
   },
+  headerIcon: {
+    width: 14,
+    height: 14,
+  },
   filtersContainer: {
     flexDirection: 'row',
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    backgroundColor: '#fff',
+    paddingVertical: 16,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: '#F0F0F0',
   },
   filterButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#F8F8F8',
     borderRadius: 20,
     marginRight: 10,
   },
@@ -343,20 +499,28 @@ const styles = StyleSheet.create({
     color: '#666',
     marginHorizontal: 5,
   },
+  filterIconStyle: {
+    width: 16,
+    height: 16,
+    marginRight: 4,
+  },
+  downArrowStyle: {
+    width: 12,
+    height: 12,
+    marginLeft: 4,
+  },
   resultsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    paddingVertical: 16,
+    backgroundColor: '#FFFFFF',
   },
   resultsCount: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Inter',
-    color: '#333',
+    color: '#8E8E8E',
   },
   sortButton: {
     flexDirection: 'row',
@@ -365,16 +529,16 @@ const styles = StyleSheet.create({
   sortText: {
     fontSize: 14,
     fontFamily: 'Inter',
-    color: '#666',
+    color: '#000000',
     marginRight: 5,
   },
   productsList: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
   },
   row: {
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    paddingHorizontal: 4,
   },
   modalOverlay: {
     flex: 1,
@@ -382,7 +546,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '70%',
@@ -392,9 +556,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: '#F0F0F0',
   },
   modalTitle: {
     fontSize: 18,
@@ -404,17 +568,18 @@ const styles = StyleSheet.create({
   },
   modalBody: {
     paddingHorizontal: 20,
+    paddingBottom: 15,
   },
   modalOption: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: '#F0F0F0',
   },
-  selectedOption: {
-    backgroundColor: '#f0f8ff',
+  lastModalOption: {
+    borderBottomWidth: 0,
   },
   modalOptionText: {
     fontSize: 16,
@@ -425,6 +590,15 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontFamily: 'Inter',
     fontWeight: '500',
+  },
+  clickedIcon: {
+    width: 14,
+    height: 10,
+    marginRight: 10,
+  },
+  closeIcon: {
+    width: 16,
+    height: 16,
   },
 });
 

@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Product } from '../types';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { favouriteActiveIcon, favouriteInactiveIcon } from '../assets';
@@ -61,10 +60,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <View style={styles.content}>
         <Text style={styles.price}>${product.price.toFixed(2)}</Text>
         <Text style={styles.title} numberOfLines={2}>
-          {product.title}
+          {product.category === 'electronics'
+            ? 'SONY Premium Wireless Headphones'
+            : product.title}
         </Text>
-        <Text style={styles.brand}>
-          {product.category === 'electronics' ? 'SONY' : 'Brand'}
+        <Text style={styles.model}>
+          Model:{' '}
+          {product.category === 'electronics'
+            ? 'WH-1000XM4, Black'
+            : `${product.category}, ${product.id}`}
         </Text>
       </View>
     </TouchableOpacity>
@@ -73,22 +77,23 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     margin: 6,
     position: 'relative',
   },
   imageContainer: {
     position: 'relative',
-    height: 140,
+    height: 180,
     backgroundColor: '#F8F8F8',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    padding: 16,
+    borderRadius: 16,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: '80%',
+    height: '80%',
   },
   favoriteButton: {
     position: 'absolute',
@@ -99,33 +104,34 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+    backgroundColor: '#FFFFFF',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
   price: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'Inter',
     fontWeight: '700',
-    color: '#1A1A1A',
-    marginBottom: 4,
+    color: '#000000',
+    marginBottom: 6,
   },
   title: {
     fontSize: 14,
     fontFamily: 'Inter',
     fontWeight: '500',
-    color: '#1A1A1A',
+    color: '#000000',
     marginBottom: 4,
     lineHeight: 18,
-    minHeight: 36,
   },
-  brand: {
+  model: {
     fontSize: 12,
     fontFamily: 'Inter',
-    fontWeight: '500',
+    fontWeight: '400',
     color: '#8E8E8E',
-    textTransform: 'uppercase',
   },
   favoriteIcon: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
   },
 });
 
