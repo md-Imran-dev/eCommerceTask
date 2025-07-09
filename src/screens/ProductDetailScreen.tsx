@@ -14,7 +14,8 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Product } from '../types';
 import { api } from '../services/api';
-import { useAppContext } from '../context/AppContext';
+import { useFavoritesStore } from '../store/favoritesStore';
+import { useCartStore } from '../store/cartStore';
 import {
   cartIcon,
   favouriteActiveIcon,
@@ -36,7 +37,8 @@ const ProductDetailScreen = () => {
   const navigation = useNavigation<ProductDetailScreenNavigationProp>();
   const route = useRoute<ProductDetailScreenRouteProp>();
   const { productId } = route.params;
-  const { addToCart, toggleFavorite, favorites } = useAppContext();
+  const { toggleFavorite, isFavorite: checkIsFavorite } = useFavoritesStore();
+  const { addToCart } = useCartStore();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -70,9 +72,7 @@ const ProductDetailScreen = () => {
     }
   };
 
-  const isFavorite = product
-    ? favorites.some(fav => fav.id === product.id)
-    : false;
+  const isFavorite = product ? checkIsFavorite(product.id) : false;
 
   if (loading) {
     return (
@@ -150,17 +150,15 @@ const ProductDetailScreen = () => {
           {/* Description */}
           <Text style={styles.description}>{product.description}</Text>
         </View>
+        <View style={styles.bottomActions}>
+          <TouchableOpacity
+            style={styles.addToCartButton}
+            onPress={handleAddToCart}
+          >
+            <Text style={styles.addToCartText}>Add to Cart</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
-
-      {/* Bottom Action Buttons */}
-      <View style={styles.bottomActions}>
-        <TouchableOpacity
-          style={styles.addToCartButton}
-          onPress={handleAddToCart}
-        >
-          <Text style={styles.addToCartText}>Add to Cart</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 };
@@ -297,7 +295,7 @@ const styles = StyleSheet.create({
   },
   addToCartButton: {
     flex: 1,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#212429',
     borderRadius: 12,
     paddingVertical: 15,
     alignItems: 'center',

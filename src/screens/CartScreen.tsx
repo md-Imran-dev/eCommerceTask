@@ -9,8 +9,8 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import { useAppContext } from '../context/AppContext';
-import { CartItem } from '../types';
+import { useCartStore } from '../store/cartStore';
+import { Product } from '../types';
 import {
   amexIcon,
   applePayIcon,
@@ -22,8 +22,13 @@ import {
   visaIcon,
 } from '../assets';
 
+interface CartItem {
+  product: Product;
+  quantity: number;
+}
+
 const CartScreen = () => {
-  const { cartItems, updateQuantity, getCartTotal } = useAppContext();
+  const { cartItems, updateQuantity, getCartTotal } = useCartStore();
 
   const handleCheckout = () => {
     Alert.alert(
@@ -134,7 +139,7 @@ const CartScreen = () => {
       <FlatList
         data={cartItems}
         renderItem={renderCartItem}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.product.id.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.cartList}
         ListFooterComponent={renderFooter}
