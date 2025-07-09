@@ -237,8 +237,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   rightArrowIcon: {
-    color: '#212429',
-    height: 16,
+    width: 8,
+    height: 14,
+    resizeMode: 'contain',
   },
 });
 

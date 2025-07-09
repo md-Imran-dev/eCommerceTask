@@ -10,12 +10,18 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Product } from '../types';
 import { api } from '../services/api';
 import { useAppContext } from '../context/AppContext';
+import {
+  cartIcon,
+  favouriteActiveIcon,
+  favouriteInactiveIcon,
+  leftArrowIcon,
+  searchIcon,
+} from '../assets';
 
 type ProductDetailScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -98,10 +104,10 @@ const ProductDetailScreen = () => {
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <Icon name="arrow-back" size={24} color="#333" />
+            <Image source={leftArrowIcon} style={styles.leftArrowIcon} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.searchButton}>
-            <Icon name="search" size={24} color="#333" />
+            <Image source={searchIcon} style={styles.searchIcon} />
           </TouchableOpacity>
         </View>
 
@@ -112,16 +118,25 @@ const ProductDetailScreen = () => {
             style={styles.productImage}
             resizeMode="contain"
           />
-          <TouchableOpacity
-            style={styles.favoriteButton}
-            onPress={handleToggleFavorite}
-          >
-            <Icon
-              name={isFavorite ? 'favorite' : 'favorite-border'}
-              size={24}
-              color={isFavorite ? '#FF6B6B' : '#666'}
-            />
-          </TouchableOpacity>
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.cartButton}
+              onPress={handleAddToCart}
+            >
+              <Image source={cartIcon} style={styles.cartIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.favoriteButton}
+              onPress={handleToggleFavorite}
+            >
+              <Image
+                source={
+                  isFavorite ? favouriteActiveIcon : favouriteInactiveIcon
+                }
+                style={styles.favouriteIcon}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Product Info */}
@@ -132,27 +147,6 @@ const ProductDetailScreen = () => {
             Model: {product.category}, {product.id}
           </Text>
 
-          {/* Rating */}
-          <View style={styles.ratingContainer}>
-            <View style={styles.stars}>
-              {[...Array(5)].map((_, index) => (
-                <Icon
-                  key={index}
-                  name="star"
-                  size={16}
-                  color={
-                    index < Math.floor(product.rating.rate)
-                      ? '#FFD700'
-                      : '#E0E0E0'
-                  }
-                />
-              ))}
-            </View>
-            <Text style={styles.ratingText}>
-              {product.rating.rate} ({product.rating.count} reviews)
-            </Text>
-          </View>
-
           {/* Description */}
           <Text style={styles.description}>{product.description}</Text>
         </View>
@@ -160,9 +154,6 @@ const ProductDetailScreen = () => {
 
       {/* Bottom Action Buttons */}
       <View style={styles.bottomActions}>
-        <TouchableOpacity style={styles.cartButton} onPress={handleAddToCart}>
-          <Icon name="shopping-cart" size={24} color="#fff" />
-        </TouchableOpacity>
         <TouchableOpacity
           style={styles.addToCartButton}
           onPress={handleAddToCart}
@@ -220,15 +211,16 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     paddingHorizontal: 20,
     alignItems: 'center',
+    borderRadius: 24,
+    margin: 20,
   },
   productImage: {
     width: width * 0.7,
     height: 250,
+    resizeMode: 'contain',
+    borderRadius: 10,
   },
   favoriteButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
     backgroundColor: '#fff',
     borderRadius: 20,
     width: 40,
@@ -295,13 +287,13 @@ const styles = StyleSheet.create({
     borderTopColor: '#f0f0f0',
   },
   cartButton: {
-    backgroundColor: '#333',
-    borderRadius: 12,
-    width: 60,
-    height: 50,
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+    marginBottom: 10,
   },
   addToCartButton: {
     flex: 1,
@@ -316,6 +308,35 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Inter',
     fontWeight: '600',
+  },
+  searchIcon: {
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
+    tintColor: '#333',
+  },
+  cartIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+    backgroundColor: '#ffffff',
+  },
+  favouriteIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+    backgroundColor: '#f5f5f5',
+  },
+  leftArrowIcon: {
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
+  },
+  iconContainer: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    alignItems: 'center',
   },
 });
 

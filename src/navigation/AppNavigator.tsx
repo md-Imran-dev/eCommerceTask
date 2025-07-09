@@ -88,7 +88,7 @@ const TabNavigator = () => {
           tabBarLabel: 'Favourites',
           tabBarBadge: favoritesCount > 0 ? favoritesCount : undefined,
           tabBarBadgeStyle: {
-            backgroundColor: '#FF6B6B',
+            backgroundColor: '#333',
             color: '#fff',
             fontSize: 10,
             fontFamily: 'Inter',
@@ -124,16 +124,8 @@ const AppNavigator = () => {
         }}
       >
         <Stack.Screen name="MainTabs" component={TabNavigator} />
-        <Stack.Screen
-          name="ProductDetail"
-          component={ProductDetailScreen}
-          options={{ headerShown: true, title: 'Product Detail' }}
-        />
-        <Stack.Screen
-          name="ProductListing"
-          component={ProductListingScreen}
-          options={{ headerShown: true, title: 'Products' }}
-        />
+        <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+        <Stack.Screen name="ProductListing" component={ProductListingScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

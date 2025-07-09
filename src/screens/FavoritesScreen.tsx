@@ -6,13 +6,15 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
+  Image,
+  Alert,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Product } from '../types';
-import ProductCard from '../components/ProductCard';
 import { useFavoritesStore } from '../store/favoritesStore';
+import { useCartStore } from '../store/cartStore';
+import { cartIcon, threeDotIcon } from '../assets';
 
 type FavoritesScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -20,22 +22,82 @@ type FavoritesScreenNavigationProp =
 const FavoritesScreen = () => {
   const navigation = useNavigation<FavoritesScreenNavigationProp>();
   const { favorites, clearFavorites } = useFavoritesStore();
+  const { addToCart } = useCartStore();
 
   const handleProductPress = (product: Product) => {
     navigation.navigate('ProductDetail', { productId: product.id });
   };
 
-  const handleClearFavorites = () => {
-    clearFavorites();
+  const handleAddToCart = (product: Product) => {
+    addToCart(product);
+    Alert.alert(
+      'Added to Cart',
+      `${product.title} has been added to your cart.`,
+      [{ text: 'OK', onPress: () => {} }],
+    );
   };
 
-  const renderProduct = ({ item }: { item: Product }) => (
-    <ProductCard product={item} onPress={handleProductPress} />
+  const handleMenuPress = (product: Product) => {
+    Alert.alert('Options', `What would you like to do with ${product.title}?`, [
+      {
+        text: 'Remove from Favorites',
+        onPress: () => handleRemoveFromFavorites(product),
+        style: 'destructive',
+      },
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+    ]);
+  };
+
+  const handleRemoveFromFavorites = (product: Product) => {
+    const { toggleFavorite } = useFavoritesStore.getState();
+    toggleFavorite(product);
+    Alert.alert(
+      'Removed from Favorites',
+      `${product.title} has been removed from your favorites.`,
+      [{ text: 'OK', onPress: () => {} }],
+    );
+  };
+
+  const renderFavoriteItem = ({ item }: { item: Product }) => (
+    <TouchableOpacity
+      style={styles.favoriteItem}
+      onPress={() => handleProductPress(item)}
+    >
+      <Image source={{ uri: item.image }} style={styles.productImage} />
+      <View style={styles.productInfo}>
+        <View style={styles.productPriceContainer}>
+          <Text style={styles.productPrice}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.productOriginalPrice}>
+            ${(item.price * 1.2).toFixed(2)}
+          </Text>
+        </View>
+        <Text style={styles.productTitle} numberOfLines={1}>
+          {item.title}
+        </Text>
+        <Text style={styles.productDescription} numberOfLines={1}>
+          {item.category}
+        </Text>
+      </View>
+      <View style={styles.rightSection}>
+        <TouchableOpacity
+          style={styles.cartButton}
+          onPress={() => handleAddToCart(item)}
+        >
+          <Image source={cartIcon} style={styles.cartButtonIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleMenuPress(item)}>
+          <Image source={threeDotIcon} style={styles.menuDots} />
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
   );
 
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
-      <Icon name="favorite-border" size={80} color="#E5E5E5" />
+      <Image source={cartIcon} style={styles.emptyIcon} />
       <Text style={styles.emptyTitle}>No Favorites Yet</Text>
       <Text style={styles.emptyDescription}>
         Products you mark as favorites will appear here
@@ -52,31 +114,19 @@ const FavoritesScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Favorites</Text>
-        {favorites.length > 0 && (
-          <TouchableOpacity onPress={handleClearFavorites}>
-            <Text style={styles.clearText}>Clear All</Text>
-          </TouchableOpacity>
-        )}
+        <Text style={styles.headerTitle}>Favourites</Text>
       </View>
 
       {favorites.length === 0 ? (
         renderEmptyState()
       ) : (
-        <>
-          <Text style={styles.countText}>
-            {favorites.length} {favorites.length === 1 ? 'item' : 'items'}
-          </Text>
-          <FlatList
-            data={favorites}
-            renderItem={renderProduct}
-            keyExtractor={item => item.id.toString()}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.productsList}
-            columnWrapperStyle={styles.row}
-          />
-        </>
+        <FlatList
+          data={favorites}
+          renderItem={renderFavoriteItem}
+          keyExtractor={item => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.favoritesList}
+        />
       )}
     </SafeAreaView>
   );
@@ -88,46 +138,110 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   header: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 15,
+    backgroundColor: '#fff',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontFamily: 'Inter',
+    fontWeight: '600',
+    color: '#000',
+    textAlign: 'center',
+  },
+  favoritesList: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  favoriteItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    alignItems: 'flex-start',
+  },
+  productImage: {
+    width: 72,
+    height: 76,
+    borderRadius: 8,
+    marginRight: 12,
+    backgroundColor: '#F5F5F5',
+    resizeMode: 'contain',
+    padding: 5,
+  },
+  productInfo: {
+    flex: 1,
+  },
+  productPriceContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 16,
+    gap: 8,
   },
-  title: {
-    fontSize: 28,
-    fontFamily: 'Inter',
-    fontWeight: '700',
-    color: '#1A1A1A',
-    letterSpacing: -0.5,
-  },
-  clearText: {
+  productPrice: {
     fontSize: 16,
     fontFamily: 'Inter',
-    fontWeight: '500',
-    color: '#FF6B6B',
+    fontWeight: 'bold',
+    color: '#FF3B30',
+    marginBottom: 2,
   },
-  countText: {
-    fontSize: 16,
+  productOriginalPrice: {
+    fontSize: 12,
     fontFamily: 'Inter',
-    fontWeight: '500',
-    color: '#8E8E8E',
-    paddingHorizontal: 20,
-    marginBottom: 16,
+    color: '#999',
+    textDecorationLine: 'line-through',
+    marginBottom: 4,
   },
-  productsList: {
-    paddingHorizontal: 14,
-    paddingBottom: 20,
+  productTitle: {
+    fontSize: 14,
+    fontFamily: 'Inter',
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 2,
+    width: '90%',
   },
-  row: {
-    justifyContent: 'space-between',
+  productDescription: {
+    fontSize: 12,
+    fontFamily: 'Inter',
+    color: '#666',
+  },
+  rightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 10,
+    height: 72,
+  },
+  menuDots: {
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
+  },
+  cartButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#F5F5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cartButtonIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
+  },
+  emptyIcon: {
+    width: 80,
+    height: 80,
+    resizeMode: 'contain',
+    tintColor: '#E5E5E5',
   },
   emptyTitle: {
     fontSize: 24,

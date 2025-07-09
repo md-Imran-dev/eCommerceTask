@@ -213,11 +213,11 @@ const ProductListingScreen = () => {
 
       {/* Filters */}
       <View style={styles.filtersContainer}>
+        <Image source={filterIcon} style={styles.filterIconStyle} />
         <TouchableOpacity
           style={styles.filterButton}
           onPress={() => setShowCategoryModal(true)}
         >
-          <Image source={filterIcon} style={styles.filterIconStyle} />
           <Text style={styles.filterText}>Category</Text>
           <Image source={downArrowIcon} style={styles.downArrowStyle} />
         </TouchableOpacity>
@@ -252,7 +252,9 @@ const ProductListingScreen = () => {
           style={styles.sortButton}
           onPress={() => setShowSortModal(true)}
         >
-          <Text style={styles.sortText}>Sort by {sortBy}</Text>
+          <Text style={styles.sortText}>
+            Sort by <Text style={styles.sortTextBold}>{sortBy}</Text>
+          </Text>
           <Image source={downArrowIcon} style={styles.downArrowStyle} />
         </TouchableOpacity>
       </View>
@@ -272,7 +274,7 @@ const ProductListingScreen = () => {
       <Modal
         visible={showCategoryModal}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setShowCategoryModal(false)}
       >
         <View style={styles.modalOverlay}>
@@ -280,7 +282,7 @@ const ProductListingScreen = () => {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Select Category</Text>
               <TouchableOpacity onPress={() => setShowCategoryModal(false)}>
-                <Icon name="close" size={24} color="#333" />
+                <Image source={closeIcon} style={styles.closeIcon} />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.modalBody}>
@@ -300,7 +302,7 @@ const ProductListingScreen = () => {
                     {getCategoryDisplayName(category)}
                   </Text>
                   {selectedCategory === category && (
-                    <Icon name="check" size={20} color="#007AFF" />
+                    <Image source={clickedIcon} style={styles.clickedIcon} />
                   )}
                 </TouchableOpacity>
               ))}
@@ -313,7 +315,7 @@ const ProductListingScreen = () => {
       <Modal
         visible={showBrandModal}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setShowBrandModal(false)}
       >
         <View style={styles.modalOverlay}>
@@ -321,7 +323,7 @@ const ProductListingScreen = () => {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Select Brand</Text>
               <TouchableOpacity onPress={() => setShowBrandModal(false)}>
-                <Icon name="close" size={24} color="#333" />
+                <Image source={closeIcon} style={styles.closeIcon} />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.modalBody}>
@@ -340,7 +342,7 @@ const ProductListingScreen = () => {
                     {brand}
                   </Text>
                   {selectedBrand === brand && (
-                    <Icon name="check" size={20} color="#007AFF" />
+                    <Image source={clickedIcon} style={styles.clickedIcon} />
                   )}
                 </TouchableOpacity>
               ))}
@@ -353,7 +355,7 @@ const ProductListingScreen = () => {
       <Modal
         visible={showPriceModal}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setShowPriceModal(false)}
       >
         <View style={styles.modalOverlay}>
@@ -361,7 +363,7 @@ const ProductListingScreen = () => {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Select Price Range</Text>
               <TouchableOpacity onPress={() => setShowPriceModal(false)}>
-                <Icon name="close" size={24} color="#333" />
+                <Image source={closeIcon} style={styles.closeIcon} />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.modalBody}>
@@ -380,7 +382,7 @@ const ProductListingScreen = () => {
                     {price}
                   </Text>
                   {selectedPriceRange === price && (
-                    <Icon name="check" size={20} color="#007AFF" />
+                    <Image source={clickedIcon} style={styles.clickedIcon} />
                   )}
                 </TouchableOpacity>
               ))}
@@ -393,7 +395,7 @@ const ProductListingScreen = () => {
       <Modal
         visible={showSortModal}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setShowSortModal(false)}
       >
         <View style={styles.modalOverlay}>
@@ -473,16 +475,19 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   headerIcon: {
-    width: 14,
-    height: 14,
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
   },
   filtersContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
+    justifyContent: 'space-between',
   },
   filterButton: {
     flexDirection: 'row',
@@ -490,7 +495,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     backgroundColor: '#F8F8F8',
-    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
+    borderRadius: 12,
     marginRight: 10,
   },
   filterText: {
@@ -500,14 +507,22 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   filterIconStyle: {
-    width: 16,
-    height: 16,
-    marginRight: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8F8F8',
+    borderRadius: 12,
+    marginRight: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    height: 40,
+    fontWeight: '400',
+    color: '#666',
   },
   downArrowStyle: {
     width: 12,
     height: 12,
     marginLeft: 4,
+    tintColor: '#666',
   },
   resultsHeader: {
     flexDirection: 'row',
@@ -531,6 +546,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter',
     color: '#000000',
     marginRight: 5,
+  },
+  sortTextBold: {
+    fontWeight: 'bold',
   },
   productsList: {
     paddingHorizontal: 16,

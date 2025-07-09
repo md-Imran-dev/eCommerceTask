@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    margin: 6,
+    padding: 6,
     position: 'relative',
   },
   imageContainer: {
@@ -97,9 +97,14 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {
     position: 'absolute',
-    top: 12,
-    right: 12,
-    padding: 4,
+    top: 8,
+    right: 10,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 1,
   },
   content: {
@@ -130,8 +135,9 @@ const styles = StyleSheet.create({
     color: '#8E8E8E',
   },
   favoriteIcon: {
-    width: 20,
-    height: 20,
+    width: 14,
+    height: 14,
+    resizeMode: 'contain',
   },
 });
 

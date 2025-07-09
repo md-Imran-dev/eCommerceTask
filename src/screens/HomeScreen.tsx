@@ -155,7 +155,7 @@ const HomeScreen = () => {
       onPress={() => handleProductPress(item)}
     >
       <TouchableOpacity
-        style={styles.favoriteButtonSmall}
+        style={styles.favoriteButton}
         onPress={() => handleFavoritePress(item)}
       >
         <Image
@@ -419,10 +419,15 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   favoriteButton: {
-    padding: 8,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
-    top: 12,
-    right: 12,
+    top: 8,
+    right: 10,
     zIndex: 1,
   },
   pagination: {
@@ -455,13 +460,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
     marginBottom: 12,
     position: 'relative',
-  },
-  favoriteButtonSmall: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    zIndex: 1,
-    padding: 4,
   },
   recommendedImageContainer: {
     backgroundColor: '#F8F8F8',
@@ -505,11 +503,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   favoriteIcon: {
-    width: 24,
-    height: 24,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 4,
+    width: 14,
+    height: 14,
   },
 });
 
