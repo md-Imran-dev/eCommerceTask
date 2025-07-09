@@ -8,14 +8,14 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { rightArrowIcon } from '../assets';
 
 const ProfileScreen = () => {
   const menuItems = [
-    { id: 1, title: 'Personal Information', icon: 'person' },
-    { id: 2, title: 'Order History', icon: 'history' },
-    { id: 3, title: 'Shipping Address', icon: 'location-on' },
-    { id: 4, title: 'Payment Methods', icon: 'credit-card' },
-    { id: 5, title: 'Notifications', icon: 'notifications' },
+    { id: 1, title: 'Order History', icon: 'history' },
+    { id: 2, title: 'Shipping Address', icon: 'location-on' },
+    { id: 3, title: 'Payment Methods', icon: 'credit-card' },
+    { id: 4, title: 'Notifications', icon: 'notifications' },
     { id: 6, title: 'Help & Support', icon: 'help' },
     { id: 7, title: 'About', icon: 'info' },
     { id: 8, title: 'Sign Out', icon: 'exit-to-app' },
@@ -24,10 +24,9 @@ const ProfileScreen = () => {
   const renderMenuItem = (item: any) => (
     <TouchableOpacity key={item.id} style={styles.menuItem}>
       <View style={styles.menuItemContent}>
-        <Icon name={item.icon} size={24} color="#666" />
         <Text style={styles.menuItemText}>{item.title}</Text>
       </View>
-      <Icon name="chevron-right" size={24} color="#666" />
+      <Image source={rightArrowIcon} style={styles.menuItemIcon} />
     </TouchableOpacity>
   );
 
@@ -41,7 +40,12 @@ const ProfileScreen = () => {
       <View style={styles.profileSection}>
         <View style={styles.profileInfo}>
           <View style={styles.avatar}>
-            <Icon name="person" size={40} color="#666" />
+            <Image
+              source={{
+                uri: 'https://t3.ftcdn.net/jpg/06/99/46/60/360_F_699466075_DaPTBNlNQTOwwjkOiFEoOvzDV0ByXR9E.jpg',
+              }}
+              style={styles.avatarImage}
+            />
           </View>
           <View style={styles.userInfo}>
             <Text style={styles.userName}>Michael Johnson</Text>
@@ -49,7 +53,7 @@ const ProfileScreen = () => {
           </View>
         </View>
         <TouchableOpacity style={styles.editButton}>
-          <Icon name="edit" size={20} color="#007AFF" />
+          <Text>EDIT</Text>
         </TouchableOpacity>
       </View>
 
@@ -105,6 +109,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 15,
   },
+  avatarImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
   userInfo: {
     flex: 1,
   },
@@ -122,17 +131,14 @@ const styles = StyleSheet.create({
   },
   editButton: {
     padding: 8,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   menuSection: {
     backgroundColor: '#fff',
-    marginHorizontal: 20,
     marginTop: 20,
-    borderRadius: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   menuItem: {
     flexDirection: 'row',
@@ -152,6 +158,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter',
     color: '#333',
     marginLeft: 15,
+  },
+  menuItemIcon: {
+    width: 8,
+    height: 14,
+    resizeMode: 'contain',
   },
 });
 

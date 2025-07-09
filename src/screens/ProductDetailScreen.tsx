@@ -9,6 +9,8 @@ import {
   ScrollView,
   ActivityIndicator,
   Dimensions,
+  Modal,
+  Animated,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -42,6 +44,11 @@ const ProductDetailScreen = () => {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showCartPopup, setShowCartPopup] = useState(false);
+  const [showFavoritePopup, setShowFavoritePopup] = useState(false);
+  const [favoriteAction, setFavoriteAction] = useState<'added' | 'removed'>(
+    'added',
+  );
 
   useEffect(() => {
     fetchProduct();
@@ -62,13 +69,24 @@ const ProductDetailScreen = () => {
   const handleAddToCart = () => {
     if (product) {
       addToCart(product);
-      // Show success message or feedback
+      setShowCartPopup(true);
+      // Auto hide popup after 2 seconds
+      setTimeout(() => {
+        setShowCartPopup(false);
+      }, 2000);
     }
   };
 
   const handleToggleFavorite = () => {
     if (product) {
+      const wasInFavorites = checkIsFavorite(product.id);
       toggleFavorite(product);
+      setFavoriteAction(wasInFavorites ? 'removed' : 'added');
+      setShowFavoritePopup(true);
+      // Auto hide popup after 2 seconds
+      setTimeout(() => {
+        setShowFavoritePopup(false);
+      }, 2000);
     }
   };
 
@@ -159,6 +177,71 @@ const ProductDetailScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Cart Popup */}
+      <Modal
+        visible={showCartPopup}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowCartPopup(false)}
+      >
+        <View style={styles.popupOverlay}>
+          <View style={styles.popupContainer}>
+            <View style={styles.popupContent}>
+              <Image source={cartIcon} style={styles.popupIcon} />
+              <Text style={styles.popupTitle}>Added to Cart!</Text>
+              <Text style={styles.popupMessage}>
+                {product?.title} has been added to your cart.
+              </Text>
+              <TouchableOpacity
+                style={styles.popupButton}
+                onPress={() => setShowCartPopup(false)}
+              >
+                <Text style={styles.popupButtonText}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Favorite Popup */}
+      <Modal
+        visible={showFavoritePopup}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowFavoritePopup(false)}
+      >
+        <View style={styles.popupOverlay}>
+          <View style={styles.popupContainer}>
+            <View style={styles.popupContent}>
+              <Image
+                source={
+                  favoriteAction === 'added'
+                    ? favouriteActiveIcon
+                    : favouriteInactiveIcon
+                }
+                style={styles.popupIcon}
+              />
+              <Text style={styles.popupTitle}>
+                {favoriteAction === 'added'
+                  ? 'Added to Favorites!'
+                  : 'Removed from Favorites!'}
+              </Text>
+              <Text style={styles.popupMessage}>
+                {product?.title} has been{' '}
+                {favoriteAction === 'added' ? 'added to' : 'removed from'} your
+                favorites.
+              </Text>
+              <TouchableOpacity
+                style={styles.popupButton}
+                onPress={() => setShowFavoritePopup(false)}
+              >
+                <Text style={styles.popupButtonText}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -336,6 +419,65 @@ const styles = StyleSheet.create({
     bottom: 10,
     right: 10,
     alignItems: 'center',
+  },
+  // Popup styles
+  popupOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popupContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    marginHorizontal: 20,
+    maxWidth: 320,
+    width: '90%',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+  },
+  popupContent: {
+    padding: 24,
+    alignItems: 'center',
+  },
+  popupIcon: {
+    width: 48,
+    height: 48,
+    marginBottom: 16,
+    resizeMode: 'contain',
+  },
+  popupTitle: {
+    fontSize: 18,
+    fontFamily: 'Inter',
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  popupMessage: {
+    fontSize: 14,
+    fontFamily: 'Inter',
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  popupButton: {
+    backgroundColor: '#212429',
+    borderRadius: 8,
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    minWidth: 80,
+  },
+  popupButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'Inter',
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

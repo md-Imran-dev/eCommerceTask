@@ -18,4 +18,7 @@ import paypalIcon from './icons/paypal.png';
 import visaIcon from './icons/visa.png';
 import cartIcon from './icons/CartIcon.png';
 
+
+
+
 export { favouriteActiveIcon, favouriteInactiveIcon, searchIcon, rightArrowIcon, downArrowIcon, filterIcon, leftArrowIcon, clickedIcon, closeIcon, removeIcon, addIcon, threeDotIcon, amexIcon, applePayIcon, gPayIcon, mastercardIcon, paypalIcon, visaIcon, cartIcon };

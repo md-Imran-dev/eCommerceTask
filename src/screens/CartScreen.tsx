@@ -329,6 +329,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
+    marginTop: 10,
   },
   totalLabel: {
     fontSize: 16,
