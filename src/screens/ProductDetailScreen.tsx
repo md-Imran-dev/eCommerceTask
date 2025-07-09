@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Inter',
     color: '#666',
+    fontWeight: '400',
   },
   header: {
     flexDirection: 'row',
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 24,
     fontFamily: 'Inter',
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: '#333',
     marginBottom: 8,
   },

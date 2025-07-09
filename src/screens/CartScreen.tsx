@@ -30,12 +30,27 @@ interface CartItem {
 const CartScreen = () => {
   const { cartItems, updateQuantity, getCartTotal } = useCartStore();
 
+  const paymentMethods = [
+    { id: 'paypal', icon: paypalIcon, name: 'PayPal' },
+    { id: 'visa', icon: visaIcon, name: 'Visa' },
+    { id: 'mastercard', icon: mastercardIcon, name: 'Mastercard' },
+    { id: 'gpay', icon: gPayIcon, name: 'Google Pay' },
+    { id: 'applepay', icon: applePayIcon, name: 'Apple Pay' },
+    { id: 'amex', icon: amexIcon, name: 'American Express' },
+  ];
+
   const handleCheckout = () => {
     Alert.alert(
       'Checkout',
       'This is a demo checkout. Your order would be processed here.',
       [{ text: 'OK', onPress: () => {} }],
     );
+  };
+
+  const handlePaymentMethodPress = (method: (typeof paymentMethods)[0]) => {
+    Alert.alert('Payment Method', `You selected ${method.name}`, [
+      { text: 'OK', onPress: () => {} },
+    ]);
   };
 
   const renderCartItem = ({ item }: { item: CartItem }) => (
@@ -90,25 +105,33 @@ const CartScreen = () => {
           <Text style={styles.totalValue}>$0.00</Text>
         </View>
         <View style={styles.totalRow}>
-          <Text style={styles.totalLabelBold}>Total</Text>
+          <View style={styles.totalLabelContainer}>
+            <Text style={styles.totalLabelBold}>Total</Text>
+            <Text style={styles.taxIncluded}>TVA included</Text>
+          </View>
           <Text style={styles.totalValueBold}>
             ${getCartTotal().toFixed(2)}
           </Text>
         </View>
-        <Text style={styles.taxIncluded}>TVA included</Text>
       </View>
-
-      <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-        <Text style={styles.checkoutButtonText}>Checkout</Text>
-      </TouchableOpacity>
-
-      <View style={styles.paymentMethods}>
-        <Image source={paypalIcon} style={styles.paymentIcon} />
-        <Image source={visaIcon} style={styles.paymentIcon} />
-        <Image source={mastercardIcon} style={styles.paymentIcon} />
-        <Image source={gPayIcon} style={styles.paymentIcon} />
-        <Image source={applePayIcon} style={styles.paymentIcon} />
-        <Image source={amexIcon} style={styles.paymentIcon} />
+      <View style={styles.checkoutContainer}>
+        <TouchableOpacity
+          style={styles.checkoutButton}
+          onPress={handleCheckout}
+        >
+          <Text style={styles.checkoutButtonText}>Checkout</Text>
+        </TouchableOpacity>
+        <View style={styles.paymentMethods}>
+          {paymentMethods.map(method => (
+            <TouchableOpacity
+              key={method.id}
+              style={styles.paymentMethodButton}
+              onPress={() => handlePaymentMethodPress(method)}
+            >
+              <Image source={method.icon} style={styles.paymentIcon} />
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
     </View>
   );
@@ -136,14 +159,19 @@ const CartScreen = () => {
         <Text style={styles.headerTitle}>Cart</Text>
       </View>
 
-      <FlatList
-        data={cartItems}
-        renderItem={renderCartItem}
-        keyExtractor={item => item.product.id.toString()}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.cartList}
-        ListFooterComponent={renderFooter}
-      />
+      <View style={styles.contentContainer}>
+        <FlatList
+          data={cartItems}
+          renderItem={renderCartItem}
+          keyExtractor={item => item.product.id.toString()}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.cartList}
+          style={styles.flatListContainer}
+        />
+
+        {/* Fixed Footer at bottom */}
+        {renderFooter()}
+      </View>
     </SafeAreaView>
   );
 };
@@ -166,6 +194,12 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'center',
   },
+  contentContainer: {
+    flex: 1,
+  },
+  flatListContainer: {
+    flex: 1,
+  },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -187,6 +221,7 @@ const styles = StyleSheet.create({
   cartList: {
     paddingHorizontal: 16,
     paddingTop: 16,
+    paddingBottom: 20, // Add padding to prevent overlap with footer
   },
   cartItem: {
     flexDirection: 'row',
@@ -282,10 +317,9 @@ const styles = StyleSheet.create({
   },
   footer: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    marginTop: 10,
-    marginBottom: 20,
+    borderTopWidth: 1,
+    borderColor: '#E5E5E5',
+    paddingHorizontal: 16,
   },
   totalSection: {
     marginBottom: 20,
@@ -319,10 +353,9 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   taxIncluded: {
-    fontSize: 12,
+    fontSize: 10,
     fontFamily: 'Inter',
     color: '#999',
-    textAlign: 'right',
     marginTop: 4,
   },
   checkoutButton: {
@@ -344,15 +377,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
+  paymentMethodButton: {
+    padding: 4,
+    borderRadius: 8,
+  },
   paymentIcon: {
-    width: 40,
-    height: 24,
+    width: 52,
+    height: 32,
     resizeMode: 'contain',
+    borderWidth: 1.5,
+    borderColor: '#E5E5E5',
+    borderRadius: 4,
+    padding: 3,
   },
   cartIcon: {
     width: 100,
     height: 100,
     resizeMode: 'contain',
+  },
+  checkoutContainer: {},
+  totalLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
 });
 
