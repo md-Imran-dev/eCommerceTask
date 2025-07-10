@@ -22,11 +22,13 @@ import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import ProductListingScreen from '../screens/ProductListingScreen';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const TabNavigator = () => {
+  const insets = useSafeAreaInsets();
   const { getFavoritesCount } = useFavoritesStore();
   const { getCartItemsCount } = useCartStore();
 
@@ -71,7 +73,8 @@ const TabNavigator = () => {
         },
         tabBarStyle: {
           backgroundColor: '#fff',
-          paddingBottom: 10,
+          height: 60 + (insets.bottom > 0 ? insets.bottom : 10),
+          paddingTop: 5,
         },
       })}
     >

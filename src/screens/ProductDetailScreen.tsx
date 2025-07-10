@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 10,
   },
@@ -377,8 +377,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
     backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
   },
   cartButton: {
     backgroundColor: '#ffffff',

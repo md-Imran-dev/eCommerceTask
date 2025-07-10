@@ -321,6 +321,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#E5E5E5',
     paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   totalSection: {
     marginBottom: 20,
@@ -381,16 +382,16 @@ const styles = StyleSheet.create({
   },
   paymentMethodButton: {
     padding: 4,
-    borderRadius: 8,
-  },
-  paymentIcon: {
-    width: Platform.OS === 'android' ? 56 : 52,
-    height: Platform.OS === 'android' ? 32 : 32,
-    resizeMode: 'contain',
+    borderRadius: 4,
+    width: 52,
+    height: 32,
     borderWidth: 1.5,
     borderColor: '#E5E5E5',
-    borderRadius: 4,
-    padding: 3,
+  },
+  paymentIcon: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
   cartIcon: {
     width: 100,

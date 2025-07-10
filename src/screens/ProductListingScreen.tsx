@@ -11,7 +11,6 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Product } from '../types';
@@ -459,7 +458,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: '#FFFFFF',
