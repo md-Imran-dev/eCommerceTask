@@ -8,6 +8,7 @@ import {
   FlatList,
   Image,
   Alert,
+  Platform,
 } from 'react-native';
 import { useCartStore } from '../store/cartStore';
 import { Product } from '../types';
@@ -383,8 +384,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   paymentIcon: {
-    width: 52,
-    height: 32,
+    width: Platform.OS === 'android' ? 56 : 52,
+    height: Platform.OS === 'android' ? 32 : 32,
     resizeMode: 'contain',
     borderWidth: 1.5,
     borderColor: '#E5E5E5',

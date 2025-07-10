@@ -42,8 +42,8 @@ const TabNavigator = () => {
           const iconStyle = {
             width: size,
             height: size,
-            opacity: focused ? 1 : 0.4, // Full opacity for active, reduced for inactive
-            tintColor: focused ? '#333' : '#C0C0C0', // Dark for active, light gray for inactive
+            opacity: focused ? 1 : 0.4,
+            tintColor: focused ? '#333' : '#C0C0C0',
           };
 
           if (route.name === 'Home') {
@@ -71,11 +71,7 @@ const TabNavigator = () => {
         },
         tabBarStyle: {
           backgroundColor: '#fff',
-          borderTopWidth: 1,
-          borderTopColor: '#f0f0f0',
-          paddingBottom: 5,
-          paddingTop: 5,
-          // height: 65,
+          paddingBottom: 10,
         },
       })}
     >

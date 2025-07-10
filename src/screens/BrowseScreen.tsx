@@ -10,8 +10,8 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Platform,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -161,11 +161,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
     marginHorizontal: 16,
-    marginTop: 16,
+    // marginTop: 16,
     marginBottom: 16,
     paddingHorizontal: 16,
     borderRadius: 12,
     height: 48,
+    marginTop: Platform.OS === 'android' ? 30 : 16,
   },
   searchIcon: {
     width: 20,

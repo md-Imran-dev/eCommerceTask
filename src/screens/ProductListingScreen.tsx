@@ -213,7 +213,9 @@ const ProductListingScreen = () => {
 
       {/* Filters */}
       <View style={styles.filtersContainer}>
-        <Image source={filterIcon} style={styles.filterIconStyle} />
+        <TouchableOpacity style={styles.filterButton}>
+          <Image source={filterIcon} style={styles.filterIconInButton} />
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.filterButton}
           onPress={() => setShowCategoryModal(true)}
@@ -461,6 +463,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: '#FFFFFF',
+    marginTop: 10,
   },
   backButton: {
     padding: 5,
@@ -506,17 +509,11 @@ const styles = StyleSheet.create({
     color: '#666',
     marginHorizontal: 5,
   },
-  filterIconStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8F8F8',
-    borderRadius: 12,
-    marginRight: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    height: 40,
-    fontWeight: '400',
-    color: '#666',
+  filterIconInButton: {
+    width: 12,
+    height: 14,
+    tintColor: '#666',
+    resizeMode: 'contain',
   },
   downArrowStyle: {
     width: 12,

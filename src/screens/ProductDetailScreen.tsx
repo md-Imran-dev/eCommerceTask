@@ -3,15 +3,14 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   Image,
   ScrollView,
   ActivityIndicator,
   Dimensions,
   Modal,
-  Animated,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Product } from '../types';
@@ -124,6 +123,9 @@ const ProductDetailScreen = () => {
           >
             <Image source={leftArrowIcon} style={styles.leftArrowIcon} />
           </TouchableOpacity>
+          <View style={styles.headerTitleContainer}>
+            <Text style={styles.headerTitle}>Product Detail</Text>
+          </View>
           <TouchableOpacity style={styles.searchButton}>
             <Image source={searchIcon} style={styles.searchIcon} />
           </TouchableOpacity>
@@ -280,6 +282,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 10,
+  },
+  headerTitleContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 14,
+    fontFamily: 'Inter',
+    fontWeight: '700',
+    color: '#000000',
   },
   backButton: {
     padding: 5,
