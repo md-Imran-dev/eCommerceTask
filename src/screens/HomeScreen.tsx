@@ -192,7 +192,6 @@ const HomeScreen = () => {
       <View style={styles.header}>
         <Text style={styles.greeting}>Hello Michael</Text>
       </View>
-
       {/* Category Tabs */}
       <View>
         <ScrollView
