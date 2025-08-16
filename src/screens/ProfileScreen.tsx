@@ -6,8 +6,10 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
 import { rightArrowIcon } from '../assets';
+import { useAppContext } from '../context/AppContext';
 
 const ProfileScreen = () => {
   const menuItems = [

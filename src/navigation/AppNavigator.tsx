@@ -1,11 +1,12 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, MainTabParamList } from '../types';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useCartStore } from '../store/cartStore';
+import { useAppContext } from '../context/AppContext';
 
 // Import custom icons
 import HomeIcon from '../assets/icons/HomeIcon.png';
@@ -22,10 +23,19 @@ import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import ProductListingScreen from '../screens/ProductListingScreen';
+import Login from '../screens/Login';
+import Signup from '../screens/Signup';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
+
+// Auth Stack
+type AuthStackParamList = {
+  Login: undefined;
+  Signup: undefined;
+};
+const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 
 const TabNavigator = () => {
   const insets = useSafeAreaInsets();
@@ -114,18 +124,62 @@ const TabNavigator = () => {
   );
 };
 
+// Auth Navigator
+const AuthNavigator = () => {
+  return (
+    <AuthStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+      initialRouteName="Login"
+    >
+      <AuthStack.Screen name="Login" component={Login} />
+      <AuthStack.Screen name="Signup" component={Signup} />
+    </AuthStack.Navigator>
+  );
+};
+
+// Loading Screen Component
+const LoadingScreen = () => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+      }}
+    >
+      <ActivityIndicator size="large" color="#333" />
+    </View>
+  );
+};
+
 const AppNavigator = () => {
+  const { isAuthenticated, isLoading } = useAppContext();
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="MainTabs" component={TabNavigator} />
-        <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
-        <Stack.Screen name="ProductListing" component={ProductListingScreen} />
-      </Stack.Navigator>
+      {isAuthenticated ? (
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="MainTabs" component={TabNavigator} />
+          <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+          <Stack.Screen
+            name="ProductListing"
+            component={ProductListingScreen}
+          />
+        </Stack.Navigator>
+      ) : (
+        <AuthNavigator />
+      )}
     </NavigationContainer>
   );
 };
